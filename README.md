@@ -12,7 +12,7 @@ Add the following entry to your `.pre-commit.yml`
 
 ```yaml
 -   repo: https://github.com/backplane/pre-commit-rust-hooks
-    rev: v1.0.1
+    rev: v1.1.0
     hooks:
     -   id: fmt
     -   id: check
@@ -31,7 +31,7 @@ If you pass an `args` list to a hook that receives filename arguments you should
 
 ```yaml
 -   repo: https://github.com/backplane/pre-commit-rust-hooks
-    rev: v1.0.1
+    rev: v1.1.0
     hooks:
     -   id: fmt
         args: ['--verbose', '--edition', '2018', '--']
