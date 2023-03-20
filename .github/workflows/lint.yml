@@ -7,19 +7,6 @@ name: Lint
   pull_request:
 
 jobs:
-  actionlint:
-    runs-on: ubuntu-latest
-    steps:
-      # https://github.com/actions/checkout
-      - name: checkout
-        uses: actions/checkout@v3
-
-      # https://github.com/rhysd/actionlint
-      - name: run actionlint
-        uses: docker://rhysd/actionlint:latest
-        with:
-          args: -color
-
   pre-commit:
     runs-on: ubuntu-latest
     steps:
