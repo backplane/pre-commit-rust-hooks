@@ -32,10 +32,6 @@
     - rust
   language: system
   entry: cargo clippy
-  args:
-    - --all
-    - --
-    - check
   pass_filenames: false
 - id: test
   name: cargo test
