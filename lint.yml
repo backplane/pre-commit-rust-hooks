@@ -1,0 +1,29 @@
+name: Lint
+
+"on":
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: yamllint
+        run: |-
+          #!/bin/sh
+          set -eux
+          docker run --rm -v "$(pwd):/work" backplane/yamllint -f github .
+
+      - name: actionlint
+        run: |-
+          #!/bin/sh
+          set -eux
+          docker run --rm -v "$(pwd):/work" --workdir /work rhysd/actionlint:latest -color

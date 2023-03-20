@@ -1,0 +1,47 @@
+- id: fmt
+  name: cargo fmt
+  description: format files with "cargo fmt"
+  types:
+    - rust
+  language: system
+  entry: cargo fmt
+  args:
+    - --
+- id: fmt-check
+  name: cargo fmt (check-only)
+  description: check the formatting of source files with "cargo fmt --check"
+  types:
+    - rust
+  language: system
+  entry: cargo fmt
+  args:
+    - --check
+    - --
+- id: check
+  name: cargo check
+  description: check the package for errors with "cargo check"
+  types:
+    - rust
+  language: system
+  entry: cargo check
+  pass_filenames: false
+- id: clippy
+  name: cargo clippy
+  description: check the package with "cargo clippy"
+  types:
+    - rust
+  language: system
+  entry: cargo clippy
+  args:
+    - --all
+    - --
+    - check
+  pass_filenames: false
+- id: test
+  name: cargo test
+  description: run the tests with "cargo test"
+  types:
+    - rust
+  language: system
+  entry: cargo test
+  pass_filenames: false

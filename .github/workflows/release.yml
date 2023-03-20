@@ -1,0 +1,120 @@
+name: release
+
+"on":
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  semver:
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Push semver subtags
+        shell: python
+        run: |
+          #!/usr/bin/env python3
+          """
+          utility for pushing 1- and 2-element semantic version tags from a semver push
+          """
+          # https://github.com/actions/toolkit/blob/master/docs/action-versioning.md#recommendations
+
+          import logging
+          import os
+          import re
+          import shlex
+          import subprocess
+          import sys
+          from typing import Final, List
+
+          logging.basicConfig(
+              format="%(asctime)s %(levelname)s %(message)s",
+              datefmt="%Y-%m-%dT%H:%M:%S%z",
+              level=os.environ.get("LOG_LEVEL", "debug").upper(),
+          )
+
+          # the following regex was tweaked one on from https://semver.org/
+          semver: Final = re.compile(
+              r"^"
+              r"(?:[vVrR])?"
+              r"(?P<major>0|[1-9]\d*)\."
+              r"(?P<minor>0|[1-9]\d*)\."
+              r"(?P<patch>0|[1-9]\d*)"
+              r"(?:-"
+              r"(?P<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+              r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*"
+              r"))?"
+              r"(?:\+(?P<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"
+              r"$"
+          )
+
+          # https://docs.github.com/en/actions/learn-github-actions/variables
+          ref_name: Final = os.environ.get("GITHUB_REF_NAME")
+          actor: Final = os.environ.get("GITHUB_ACTOR")
+
+
+          def run(cmd: List[str]) -> int:
+              """run the given command (in list format)"""
+              logging.info("running command %s", " ".join([shlex.quote(word) for word in cmd]))
+              try:
+                  result = subprocess.check_call(cmd, shell=False)
+              except subprocess.CalledProcessError as e:
+                  logging.fatal("failed to run command, error: %s", e)
+                  sys.exit(1)
+              return result
+
+
+          def gitconfig():
+              """
+              set the identity of the git comitter in the global git config
+              """
+              logging.info("configuring git")
+              config = {
+                  "user.email": f"{actor}@users.noreply.github.com",
+                  "user.name": actor,
+              }
+              for k, v in config.items():
+                  logging.debug("setting git config %s=%s", k, v)
+                  run(["git", "config", "--global", k, v])
+
+
+          def main() -> int:
+              """
+              entrypoint for direct execution; returns an int for use by sys.exit
+              """
+              logging.info(
+                  "%s starting up as unix user %s and actor %s in %s, with ref: %s",
+                  __name__,
+                  os.environ.get("USER", "-unknown-"),
+                  actor,
+                  os.getcwd(),
+                  ref_name,
+              )
+              if not ref_name:
+                  logging.fatal("cannot continue without a GITHUB_REF_NAME in the environment")
+                  return 1
+              if not actor:
+                  logging.fatal("GITHUB_ACTOR is required to be set in the environment")
+                  return 1
+
+              gitconfig()
+
+              if m := semver.match(ref_name):
+                  major, minor = m.group("major"), m.group("minor")
+                  for tag in (f"v{major}", f"v{major}.{minor}"):
+                      msg = f"[skip ci] Update {tag} tag from {ref_name}"
+                      logging.info("commit: %s", msg)
+                      run(["git", "tag", "-f", "-a", "-m", msg, tag])
+                      run(["git", "push", "-f", "origin", tag])
+                  return 0
+
+              return 1
+
+
+          if __name__ == "__main__":
+              sys.exit(main())
