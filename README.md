@@ -12,7 +12,7 @@ Add the following entry to your `.pre-commit.yml`
 
 ```yaml
 -   repo: https://github.com/backplane/pre-commit-rust-hooks
-    rev: v1
+    rev: v1.0.1
     hooks:
     -   id: fmt
     -   id: check
@@ -21,10 +21,6 @@ Add the following entry to your `.pre-commit.yml`
 ```
 
 Note: The id `fmt-check` is also available if you don't want automatic changes.
-
-### Versioning
-
-This repo utilizes semver versioning, so when we release `v1.2.3`, the `v1` and `v1.2` tags are also updated.
 
 ## Passing arguments:
 
@@ -35,7 +31,7 @@ If you pass an `args` list to a hook that receives filename arguments you should
 
 ```yaml
 -   repo: https://github.com/backplane/pre-commit-rust-hooks
-    rev: v1
+    rev: v1.0.1
     hooks:
     -   id: fmt
         args: ['--verbose', '--edition', '2018', '--']
