@@ -2,37 +2,24 @@ name: Lint
 
 "on":
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  actionlint:
+  pre-commit:
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/checkout
       - name: checkout
         uses: actions/checkout@v4
 
-      # https://github.com/rhysd/actionlint
-      - name: run actionlint
-        uses: docker://rhysd/actionlint:latest
-        with:
-          args: -color
+      # https://github.com/actions/setup-python
+      - name: setup python
+        uses: actions/setup-python@v5
 
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-    # https://github.com/actions/checkout
-    - name: checkout
-      uses: actions/checkout@v4
-
-    # https://github.com/actions/setup-python
-    - name: sest up python
-      uses: actions/setup-python@v5
-
-    # https://github.com/pre-commit/action
-    - name: run pre-commit
-      uses: pre-commit/action@v3.0.1
-      env:
-        SKIP: no-commit-to-branch
+      # https://github.com/pre-commit/action
+      - name: run pre-commit
+        uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: no-commit-to-branch
