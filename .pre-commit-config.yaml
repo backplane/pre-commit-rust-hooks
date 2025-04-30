@@ -22,13 +22,16 @@ repos:
     hooks:
       - id: actionlint-docker
         name: check github workflows with actionlint
-  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-    rev: 0.2.3 # or other specific tag
-    hooks:
-      - id: yamlfmt
-        args:
-          - --mapping=2
-          - --sequence=4
-          - --offset=2
-          - --implicit_start
-          - --preserve-quotes
+
+  # suspending this as of 1-May-2025: I can't get this hook to stop
+  # over-indenting the entire .pre-commit-hooks.yaml file by 2 spaces
+  # - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+  #   rev: 0.2.3
+  #   hooks:
+  #     - id: yamlfmt
+  #       args:
+  #         - --mapping=2
+  #         - --sequence=4
+  #         - --offset=2
+  #         - --implicit_start
+  #         - --preserve-quotes
