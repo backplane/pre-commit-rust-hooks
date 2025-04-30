@@ -5,6 +5,7 @@
     - rust
   language: system
   entry: cargo fmt
+  require_serial: true
   args:
     - --
 - id: fmt-check
