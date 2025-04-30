@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -18,7 +18,17 @@ repos:
           - --branch
           - main
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.23
+    rev: v1.7.7
     hooks:
       - id: actionlint-docker
         name: check github workflows with actionlint
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3 # or other specific tag
+    hooks:
+      - id: yamlfmt
+        args:
+          - --mapping=2
+          - --sequence=4
+          - --offset=2
+          - --implicit_start
+          - --preserve-quotes
